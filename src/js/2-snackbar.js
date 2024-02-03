@@ -13,7 +13,7 @@ function createPromises(event) {
     const succesValue = event.target.elements.state.value;
     const promise = new Promise((resolve, reject) => {
         setTimeout(() => {
-            if (succesValue == 'fulfilled') {
+            if (succesValue === 'fulfilled') {
                 resolve(`✅ Fulfilled promise in ${delay}ms`);
             } else {
                 reject(`❌ Rejected promise in ${delay}ms`)
@@ -21,23 +21,28 @@ function createPromises(event) {
         }, delay)
     });
 
-    promise.then((value) => {
+    
+    
+    const onResolve = (value) => {
         console.log(value);
     iziToast.success({
         message: value,
-        position: "topRight"
+        position: "topRight",
+        messageColor: '#fff',
+        messageSize: '16px',
+        messageLineHeight: '1.5',
     })
-    });
+    }
     
-    promise.catch((error) => {
+    const onReject = (error) => {
         console.log(error);
     iziToast.error({
         message: error,
-        position: "topRight"
+        position: "topRight",
+        messageColor: '#fff',
+        messageSize: '16px',
+        messageLineHeight: '1.5',
 });
-
-});
-    
-    
-    
+    }
+    promise.then(onResolve).catch(onReject);
 };
