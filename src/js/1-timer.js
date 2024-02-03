@@ -1,5 +1,7 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 
 const startBtn = document.querySelector('[data-start]');
 const fieldsValue = document.querySelectorAll('.field');
@@ -19,6 +21,31 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     userSelectedDate = selectedDates[0].getTime();
+    
+  delta = userSelectedDate - Date.now();
+
+  if (delta > 0) {
+    startBtn.disabled = false;
+  } else {
+    startBtn.disabled = true;
+    iziToast.error({
+      message: 'Please choose a date in the future',
+      messageColor: '#fff',
+    messageSize: '',
+    messageLineHeight: '',
+      backgroundColor: '#ef4040',
+      icon: 'x',
+    position: "topRight"
+});
+    
+    
+    daysElement.textContent = '00';
+  hoursElement.textContent = '00';
+  minutesElement.textContent = '00';
+  secondsElement.textContent = '00';
+  }
+
+
     setDateToField(delta);
     
   },
@@ -32,19 +59,6 @@ flatpickr(input, options);
 
 function setDateToField(delta) {
   delta = userSelectedDate - Date.now();
-
-  if (delta > 0) {
-    startBtn.disabled = false;
-  } else {
-    startBtn.disabled = true;
-    
-    
-    daysElement.textContent = '00';
-  hoursElement.textContent = '00';
-  minutesElement.textContent = '00';
-  secondsElement.textContent = '00';
-  }
-  
   daysElement.textContent = convertMs(delta).days.toString().padStart(2,'0');
   hoursElement.textContent = convertMs(delta).hours.toString().padStart(2,'0');
   minutesElement.textContent = convertMs(delta).minutes.toString().padStart(2,'0');
@@ -59,10 +73,9 @@ startBtn.addEventListener('click', startTimer);
 
 function startTimer() {
   input.disabled = true;
-
+  startBtn.disabled = true;
   intervalId = setInterval(() => {
     setDateToField(delta);
-    startBtn.disabled = true;
   }, 1000);
 
 }
